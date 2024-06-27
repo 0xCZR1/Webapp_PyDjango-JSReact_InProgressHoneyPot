@@ -1,0 +1,87 @@
+/* General Dashboard Styling */
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Adjust ratio as needed */
+    background: #080808; /* Dark background */
+    color: #ffffff; /* Light text */
+    font-family: 'Rajdhani', sans-serif; /* Futuristic font */
+    height: 100vh;
+  }
+  
+  /* Buttons */
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .sops-button,
+  .shiftplan-button {
+    background: none;
+    border: 2px solid #00ffff; /* Neon blue border */
+    color: #00ffff;
+    padding: 15px 30px;
+    font-size: 18px;
+    text-transform: uppercase;
+    transition: all 0.3s ease; /* Smooth transition */
+    cursor: pointer;
+  }
+  
+  .sops-button:hover,
+  .shiftplan-button:hover {
+    background: #00ffff;
+    color: #080808; /* Inverted colors on hover */
+  }
+  
+  /* Alerts */
+  .alerts {
+    padding: 20px;
+  }
+  
+  .alerts h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  .alert {
+    background: #181818; /* Slightly lighter background for alerts */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .alert .message {
+    font-weight: bold;
+  }
+  
+  .alert .timestamp {
+    font-size: 12px;
+    color: #888888; /* Dimmed timestamp */
+  }
+  
+  /* Alert Types (Customize colors as needed) */
+  .alert.error {
+    border-left: 5px solid #ff0000; /* Red for error */
+  }
+  
+  .alert.warning {
+    border-left: 5px solid #ffff00; /* Yellow for warning */
+  }
+  
+  /* Responsiveness (Adjust breakpoints as needed) */
+  @media (max-width: 768px) {
+    .dashboard {
+      grid-template-columns: 1fr;
+    }
+  
+    .buttons {
+      flex-direction: row;
+      justify-content: space-around;
+    }
+  }
+  
