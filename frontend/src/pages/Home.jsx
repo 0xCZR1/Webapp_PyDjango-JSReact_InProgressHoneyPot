@@ -1,112 +1,98 @@
-import React, { useState } from 'react';
-import '../styles/schedule.css';
-
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import Alert from "./Alert";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import "../styles/dashboard.css";
+document.documentElement.style.setProperty('--background-color', '#121212');
 function Home() {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [alerts, setAlerts] = useState([
+    { type: "error", message: "Server 12 down", timestamp: "2024-06-27 18:30" },
+    { type: "warning", message: "Low disk space on database", timestamp: "2024-06-27 17:45" },
+    { type: "warning", message: "Unusual traffic spike on API endpoint", timestamp: "2024-06-26 12:10" },
+    { type: "info", message: "Firewall rule update applied", timestamp: "2024-06-25 09:55" },
+    { type: "error", message: "Critical vulnerability detected in library", timestamp: "2024-06-24 14:32" },
+    { type: "info", message: "New user account created", timestamp: "2024-06-23 11:08" },
+    { type: "warning", message: "High CPU usage on web server", timestamp: "2024-06-22 16:45" },
+  ]);
 
-  // Your Provided Schedule Data
-  const scheduleData = [
-    { name: 'Gigi', trainer: 'Becali', shifts: ['WW', 'WW', 'WW', 'WW', '', '', '', 'WW', 'WW', 'WW', 'WW', '', '', '', 'WW', 'WW', 'WW', 'WW', '', '', '', 'WW', 'WW', 'WW', 'WW', '', '', ''] },
-    { name: 'Grigore', vorname: 'Ion', shifts: ['FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF'] },
-    { name: 'Branduse', vorname: 'Cezar', shifts: ['WW', 'WW', 'WW', 'WW', '', '', '', 'WW', 'WW', 'WW', 'WW', '', '', '', 'WW', 'WW', 'WW', 'WW', '', '', '', 'WW', 'WW', 'WW', 'WW', '', '', ''] },
-    { name: 'Nust', vorname: 'Andreas', shifts: ['FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF', 'FF', 'FF', 'S', 'S', 'N', 'FF', 'FF'] },
-    { name: 'Müller', vorname: 'Sophia', shifts: ['N', 'N', '', '', 'S', 'S', '', 'N', 'N', '', '', 'S', 'S', '', 'N', 'N', '', '', 'S', 'S', '', 'N', 'N', '', '', 'S', 'S'] },
-    { name: 'Schmidt', vorname: 'Max', shifts: ['WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW', 'WW'] },
-    { name: 'Wagner', vorname: 'Lena', shifts: ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'] },
-    { name: 'Fischer', vorname: 'Lukas', shifts: ['FF', 'FF', 'FF', 'FF', 'AB', 'AB', 'AB', 'FF', 'FF', 'FF', 'FF', 'AB', 'AB', 'AB', 'FF', 'FF', 'FF', 'FF', 'AB', 'AB', 'AB', 'FF', 'FF', 'FF', 'FF', 'AB', 'AB', 'AB', 'FF', 'FF'] },
-    { name: 'Weber', vorname: 'Mia', shifts: ['WW', 'WW', 'WW', 'WW', 'O', 'O', 'O', 'WW', 'WW', 'WW', 'WW', 'O', 'O', 'O', 'WW', 'WW', 'WW', 'WW', 'O', 'O', 'O', 'WW', 'WW', 'WW', 'WW', 'O', 'O', 'O', 'WW', 'WW'] },
-    { name: 'Schulz', vorname: 'Leon', shifts: ['N', 'N', '', '', 'S', 'S', '', 'N', 'N', '', '', 'S', 'S', '', 'N', 'N', '', '', 'S', 'S', '', 'N', 'N', '', '', 'S', 'S'] },
-    { name: 'Becker', vorname: 'Emma', shifts: ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'] },
-    { name: 'Hoffmann', vorname: 'Felix', shifts: ['', '', 'FF', 'FF', 'FF', 'FF', 'FF', '', '', 'FF', 'FF', 'FF', 'FF', 'FF', '', '', 'FF', 'FF', 'FF', 'FF', 'FF', '', '', 'FF', 'FF', 'FF', 'FF', 'FF', '', ''] },
-  ];
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-  const shiftTypes = {
-    FF: 'Früh (06:00 - 14:00)',
-    S: 'Spät (14:00 - 22:00)',
-    NN: 'Nacht (22:00 - 06:00)',
-    W: 'Wochenende (08:00 - 20:00)',
-    O: 'Off',
-    AB: 'Abwesend',
-    WW: 'Frei',
-    
-    
+  const onPieEnter = (_, index) => {
+    setActiveIndex(index);
   };
 
-  // Get days in the month
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-  const startingDayOfWeek = firstDayOfMonth.getDay(); // Correction: getDay() not getWeekDay() 
+  // Function to calculate incidents in the past week
+  const getWeeklyIncidents = () => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-  // Function to get formatted date string (e.g., "Fri\n21")
-  const getFormattedDate = (date) => {
-    const dayOfWeek = date.toLocaleString('default', { weekday: 'short' });
-    const dayOfMonth = date.getDate();
-    return `${dayOfWeek}\n${dayOfMonth}`;
+    return alerts.filter(alert => new Date(alert.timestamp) >= oneWeekAgo);
   };
 
-  // Additional Helper for Styling Specific Dates
-  const isWeekend = (date) => date.getDay() === 0 || date.getDay() === 6;
+  const weeklyIncidents = getWeeklyIncidents();
+  const totalIncidents = weeklyIncidents.length;
+
+  const incidentCounts = weeklyIncidents.reduce((counts, alert) => {
+    counts[alert.type] = (counts[alert.type] || 0) + 1;
+    return counts;
+  }, {});
+
+  const colors = ["#F2910A", "#FFC300", "#00B0F0"]; // ELK-inspired colors
+
+  const pieChartData = Object.entries(incidentCounts).map(([type, count]) => ({
+    name: type,
+    value: count,
+  }));
 
   return (
-    <div className="schedule-container">
-      <h2>EvilCorp InfraMon</h2>
-      <p className="subtitle">Last Update: {new Date().toLocaleDateString()}</p>
-
-      <div className="legend-container">
-        <h3>Legende</h3>
-        {Object.entries(shiftTypes).map(([shiftCode, shiftName]) => (
-          <div className="legend-item" key={shiftCode}>
-            <span className={`legend-color ${shiftCode.toLowerCase()}`}></span>
-            <span className="legend-text">{shiftName}</span>
-          </div>
-        ))}
+    <div className="dashboard">
+      <div className="buttons">
+        <Link to="/SOPs">
+          <button className="sops-button">SOPs</button>
+        </Link>
+        <Link to="/shiftplan">
+          <button className="shiftplan-button">Shiftplan</button>
+        </Link>
       </div>
 
-      <div className="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th className="name-header">Nr.</th>
-              <th className="name-header">Name</th>
-              <th className="name-header">Vorname</th>
-              {daysOfWeek.map((day, index) => (
-                <th key={index} className={isWeekend(new Date(currentYear, currentMonth, index - startingDayOfWeek + 1)) ? 'weekend' : ''}>
-                  {day}
-                </th>
-              ))}
-            </tr>
-            <tr>
-              <th></th>
-              <th></th>
-              <th></th>
-              {Array.from({ length: daysInMonth }, (_, i) => (
-                <th key={i}>
-                  {getFormattedDate(new Date(currentYear, currentMonth, i + 1))}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {scheduleData.map((employee, index) => (
-              <tr key={employee.name}>
-                <td>{index + 1}</td>
-                <td>{employee.name}</td>
-                <td>{employee.vorname}</td>
-                {employee.shifts.map((shift, shiftIndex) => (
-                  <td key={shiftIndex} className={`shift ${shift.toLowerCase()}`}>
-                    {shift} {/* Display the shift code as text */}
-                  </td>
+      <div className="alerts-section">
+        <h3>Infrastructure Alerts</h3>
+
+        <div className="summary-section">
+          <p>Total Incidents (Past Week): {totalIncidents}</p>
+
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                activeIndex={activeIndex}
+                activeShape={{ fill: 'white' }} 
+                data={pieChartData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                innerRadius={60} 
+                fill="#8884d8"
+                onMouseEnter={onPieEnter} 
+              >
+                {pieChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                 ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="alert-list">
+          {alerts.map((alert, index) => (
+            <Alert key={index} type={alert.type} message={alert.message} timestamp={alert.timestamp} />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
 export default Home;
+
